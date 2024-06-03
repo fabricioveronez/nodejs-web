@@ -38,7 +38,9 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: ${{ inputs.ambiente || 'homologacao'}}
+    environment: 
+      name: ${{ inputs.ambiente || 'homologacao'}}
+      url: "https://google.com"
     
     steps:
     - name: Obtendo o código
