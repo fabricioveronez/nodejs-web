@@ -3,6 +3,12 @@ name: CI-CD
 
 on:
   workflow_dispatch:
+    inputs:
+      ambiente:
+        type: choice
+        options:
+          - homologacao
+          - producao
   push:
 env:
     docker_image: fabricioveronez/nodejs-web
@@ -32,7 +38,7 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: homologacao
+    environment: ${{ inputs.ambiente || 'homologacao'}}
     
     steps:
     - name: Obtendo o código
