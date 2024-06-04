@@ -59,4 +59,4 @@ jobs:
         manifests: |
           ./k8s/deployment.yaml
         images: |
-          "${{ env.docker_image }}:${{github.run_number}}"
+          ${{ env.docker_image }}:${{github.run_number}}
