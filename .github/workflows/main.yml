@@ -3,9 +3,7 @@ name: CI-CD
 
 on:
   push:
-env:
-    docker_image: fabricioveronez/nodejs-web
-
+    
 jobs:
   CI:
     runs-on: ubuntu-latest
@@ -25,19 +23,19 @@ jobs:
         file: ./src/Dockerfile
         push: true
         tags: |
-          "${{ env.docker_image }}:${{github.run_number}}"
-          "${{ env.docker_image }}:latest"  
+          "fabricioveronez/nodejs-web:${{github.run_number}}"
+          "fabricioveronez/nodejs-web:latest"  
 
   deploy-homologacao:
     needs: [CI]
     uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
     with:
-      docker_image: "${{ env.docker_image }}:${{github.run_number}}"
+      docker_image: "fabricioveronez/nodejs-web:${{github.run_number}}"
       ambiente: homologacao
 
   deploy-producao:
         needs: [CI]
         uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
         with:
-          docker_image: "${{ env.docker_image }}:${{github.run_number}}"
+          docker_image: "fabricioveronez/nodejs-web:${{github.run_number}}"
           ambiente: producao
