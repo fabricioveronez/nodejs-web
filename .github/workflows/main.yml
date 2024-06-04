@@ -2,13 +2,6 @@
 name: CI-CD
 
 on:
-  workflow_dispatch:
-    inputs:
-      ambiente:
-        type: choice
-        options:
-          - homologacao
-          - producao
   push:
 env:
     docker_image: fabricioveronez/nodejs-web
@@ -35,28 +28,16 @@ jobs:
           "${{ env.docker_image }}:${{github.run_number}}"
           "${{ env.docker_image }}:latest"  
 
-  CD:
-    runs-on: ubuntu-latest
+  deploy-homologacao:
     needs: [CI]
-    environment: 
-      name: ${{ inputs.ambiente || 'homologacao'}}
-      url: "https://google.com"
-    
-    steps:
-    - name: Obtendo o código
-      uses: actions/checkout@v3
+    uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
+    with:
+      docker_image: "${{ env.docker_image }}:${{github.run_number}}"
+      ambiente: homologacao
 
-    - name: Configuração do Kubeconfig
-      uses: azure/k8s-set-context@v4
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.K8S_CONFIG }}
-
-    - name: Deploy no cluster Kubernetes
-      uses: Azure/k8s-deploy@v5
-      with:
-        namespace: ${{ vars.APP_NAMESPACE }}
-        manifests: |
-          ./k8s/deployment.yaml
-        images: |
-          ${{ env.docker_image }}:${{github.run_number}}
+  deploy-producao:
+        needs: [CI]
+        uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
+        with:
+          docker_image: "${{ env.docker_image }}:${{github.run_number}}"
+          ambiente: producao

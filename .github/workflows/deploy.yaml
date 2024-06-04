@@ -1,0 +1,41 @@
+
+name: Deploy
+
+on:
+  workflow_call: 
+    inputs:
+      docker_image: 
+        type: string
+        description: "Nome da imagem Docker de deploy"
+      ambiente:
+        type: string
+        description: "Nome do ambiente de deploy"
+  push:
+env:
+    docker_image: fabricioveronez/nodejs-web
+
+jobs:
+  deploy_kubernetes:
+
+    runs-on: ubuntu-latest
+    environment: 
+        name: ${{ inputs.ambiente }}
+        url: https://google.com
+    steps:
+    - name: Obtendo o código
+      uses: actions/checkout@v3
+
+    - name: Configuração do Kubeconfig
+      uses: azure/k8s-set-context@v4
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.K8S_CONFIG }}
+
+    - name: Deploy no cluster Kubernetes
+      uses: Azure/k8s-deploy@v5
+      with:
+        namespace: ${{ vars.APP_NAMESPACE }}
+        manifests: |
+          ./k8s/deployment.yaml
+        images: |
+          ${{ inputs.docker_image }}
