@@ -3,7 +3,7 @@ name: CI-CD
 
 on:
   push:
-    
+
 jobs:
   CI:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
       ambiente: homologacao
 
   deploy-producao:
-        needs: [CI]
+        needs: [deploy-homologacao]
         uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
         with:
           docker_image: "fabricioveronez/nodejs-web:${{github.run_number}}"
