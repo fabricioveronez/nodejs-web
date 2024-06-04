@@ -32,10 +32,12 @@ jobs:
     with:
       docker_image: "fabricioveronez/nodejs-web:${{github.run_number}}"
       ambiente: homologacao
+    secrets: inherit
 
   deploy-producao:
-        needs: [deploy-homologacao]
-        uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
-        with:
-          docker_image: "fabricioveronez/nodejs-web:${{github.run_number}}"
-          ambiente: producao
+    needs: [deploy-homologacao]
+    uses: fabricioveronez/nodejs-web/.github/workflows/deploy.yaml@main
+    with:
+      docker_image: "fabricioveronez/nodejs-web:${{github.run_number}}"
+      ambiente: producao
+    secrets: inherit
