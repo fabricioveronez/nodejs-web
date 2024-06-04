@@ -10,7 +10,6 @@ on:
       ambiente:
         type: string
         description: "Nome do ambiente de deploy"
-  push:
 env:
     docker_image: fabricioveronez/nodejs-web
 
